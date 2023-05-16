@@ -1,27 +1,26 @@
 class Solution:
-    def ThreeSum(self, integers):
-        """
-        :type integers: List[int]
-        :rtype: List[List[int]]
-        """
-        integers.sort()
-        result = []
-        for index in range(len(integers)):
-            if integers[index] > 0:
-                break
-            if index > 0 and integers[index] == integers[index - 1]:
-                continue
-            left, right = index + 1, len(integers) - 1
-            while left < right:
-                if integers[left] + integers[right] < 0 - integers[index]:
-                    left += 1
-                elif integers[left] + integers[right] > 0 - integers[index]:
-                    right -= 1
-                else:
-                    result.append([integers[index], integers[left], integers[right]]) # After a triplet is appended, we try our best to incease the numeric value of its first element or that of its second.
-                    left += 1 # The other pairs and the one we were just looking at are either duplicates or smaller than the target.
-                    right -= 1 # The other pairs are either duplicates or greater than the target.
-                    # We must move on if there is less than or equal to one integer in between the two integers.
-                    while integers[left] == integers[left - 1] and left < right:
-                        left += 1 # The pairs are either duplicates or smaller than the target.
-        return result
+    def fourSum(self, nums, target):
+        def findNsum(l, r, target, N, result, results):
+            if r-l+1 < N or N < 2 or target < nums[l]*N or target > nums[r]*N:  
+                return
+            if N == 2: 
+                while l < r:
+                    s = nums[l] + nums[r]
+                    if s == target:
+                        results.append(result + [nums[l], nums[r]])
+                        l += 1
+                        while l < r and nums[l] == nums[l-1]:
+                            l += 1
+                    elif s < target:
+                        l += 1
+                    else:
+                        r -= 1
+            else:
+                for i in range(l, r+1):
+                    if i == l or (i > l and nums[i-1] != nums[i]):
+                        findNsum(i+1, r, target-nums[i], N-1, result+[nums[i]], results)
+
+        nums.sort()
+        results = []
+        findNsum(0, len(nums)-1, target, 4, [], results)
+        return results
